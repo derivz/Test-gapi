@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test APIs</title>
+    <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        const config = {
+            apiKey: "AIzaSyAn_sYuAQZCObHSWpukWusO3oJ5DwPLj4M",
+            authDomain: "test-project-for-trivia.firebaseapp.com",
+            databaseURL: "https://test-project-for-trivia.firebaseio.com",
+            storageBucket: "test-project-for-trivia.appspot.com",
+            messagingSenderId: "368089239582"
+        };
+        firebase.initializeApp(config);
+
+        let db = firebase.database();
+
+        function init_gapi() {
+            gapi.client.init({
+              'apiKey': 'AIzaSyA--b4JeIYUXp4vSWCYaiBOL9lixvWJU6E',
+              'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            }).then(loadFromSheet)
+        }
+
+        function loadFromSheet() {
+            db.ref('names').remove();
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: '1ta56MQ9mWRPKKusFYU9Oned_SbssE8eK17E6Se60Zxg',
+                range: 'Sheet1!A2:B',
+            }).then(function (response) {
+                let range = response.result;
+                if (range.values.length > 0) {
+                    for (let i = 0; i < range.values.length; i++) {
+                        let row = range.values[i];
+                        addElement(row[0], row[1]);
+                    }
+                }
+            }, function (response) {
+                console.error('Error: ' + response.result.error.message);
+            });
+        }
+
+        function addElement(name, count) {
+            let nw = db.ref('names').push();
+            nw.set({name: name, count: count});
+        }
+
+
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=init_gapi"></script>
+</head>
+<body>
+</body>
+</html>
