@@ -4,7 +4,7 @@
     <title>Test APIs</title>
     <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
     <script>
-        // Initialize Firebase
+        // init Firebase
         const config = {
             apiKey: "AIzaSyAn_sYuAQZCObHSWpukWusO3oJ5DwPLj4M",
             authDomain: "test-project-for-trivia.firebaseapp.com",
@@ -16,7 +16,8 @@
 
         let db = firebase.database();
 
-        function init_gapi() {
+        function initGapi() {
+            // init google sheets api
             gapi.client.init({
               'apiKey': 'AIzaSyA--b4JeIYUXp4vSWCYaiBOL9lixvWJU6E',
               'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
@@ -25,6 +26,7 @@
 
         function loadFromSheet() {
             db.ref('names').remove();
+            // grab info from spreadsheet
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: '1ta56MQ9mWRPKKusFYU9Oned_SbssE8eK17E6Se60Zxg',
                 range: 'Sheet1!A2:B',
@@ -42,13 +44,14 @@
         }
 
         function addElement(name, count) {
+            // push to firebase db
             let nw = db.ref('names').push();
             nw.set({name: name, count: count});
         }
 
 
     </script>
-    <script src="https://apis.google.com/js/client.js?onload=init_gapi"></script>
+    <script src="https://apis.google.com/js/client.js?onload=initGapi"></script>
 </head>
 <body>
 </body>
